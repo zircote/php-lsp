@@ -1,6 +1,6 @@
 {
   "name": "php-lsp",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "PHP language server plugin for Claude Code with Phpactor LSP integration and automated hooks for linting, formatting, and testing",
   "author": {
     "name": "zircote",

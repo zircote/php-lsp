@@ -1,6 +1,6 @@
 #!/bin/bash
 # PHP development hooks for Claude Code
-# Handles: formatting, linting, static analysis, security, testing
+# Fast-only hooks - heavy commands shown as hints
 
 set -o pipefail
 
@@ -14,31 +14,19 @@ ext="${file_path##*.}"
 
 case "$ext" in
     php|phtml)
-        # Syntax check
+        # Syntax check (fast)
         php -l "$file_path" 2>&1 || true
 
-        # PHP-CS-Fixer (formatting)
+        # PHP-CS-Fixer formatting (fast - single file)
         if command -v php-cs-fixer >/dev/null 2>&1; then
             php-cs-fixer fix "$file_path" --quiet 2>/dev/null || true
         fi
 
-        # PHPStan (static analysis)
-        if command -v phpstan >/dev/null 2>&1; then
-            phpstan analyse "$file_path" --no-progress 2>/dev/null || true
-        fi
-
-        # Psalm (static analysis alternative)
-        if command -v psalm >/dev/null 2>&1; then
-            psalm "$file_path" --no-progress 2>/dev/null || true
-        fi
-
-        # PHP_CodeSniffer (linting)
-        if command -v phpcs >/dev/null 2>&1; then
-            phpcs --standard=PSR12 "$file_path" 2>/dev/null || true
-        fi
-
-        # Surface TODO/FIXME comments
+        # TODO/FIXME check (fast - grep only)
         grep -n -E '(TODO|FIXME|HACK|XXX|BUG):' "$file_path" 2>/dev/null || true
+
+        # Hints for on-demand commands
+        echo "💡 phpstan analyse && phpcs --standard=PSR12"
         ;;
 esac
 
